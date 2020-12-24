@@ -2,7 +2,6 @@ package com.msg.todolist.controller;
 
 import com.msg.todolist.model.TodoRequest;
 import com.msg.todolist.model.TodoResponse;
-import com.msg.todolist.repository.TodoRepository;
 import com.msg.todolist.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,12 +14,10 @@ import java.util.List;
 public class TodoController {
 
     private final TodoService todoService;
-    private final TodoRepository todoRepository;
 
     @Autowired
-    public TodoController(TodoService todoService, TodoRepository todoRepository) {
+    public TodoController(TodoService todoService) {
         this.todoService = todoService;
-        this.todoRepository = todoRepository;
     }
 
     @GetMapping("/todo")
