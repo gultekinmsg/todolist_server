@@ -5,11 +5,16 @@ import com.msg.todolist.model.TodoRequest;
 import com.msg.todolist.model.TodoResponse;
 import com.msg.todolist.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,12 +32,13 @@ public class TodoService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "empty list");
         }
         List<TodoResponse> todoResponseList = new ArrayList<>();
-        List<Todo> items = todoRepository.findAll();
+        List<Todo> items = todoRepository.findAllByOrderByDateTimeDesc();
         for (Todo item : items) {
             TodoResponse model = new TodoResponse();
             model.setId(item.getId());
             model.setName(item.getName());
             model.setCompleted(item.getCompleted());
+            model.setDateTime(item.getDateTime());
             todoResponseList.add(model);
         }
         return todoResponseList;
@@ -42,6 +48,7 @@ public class TodoService {
         Todo todo = new Todo();
         todo.setName(todoRequest.getName());
         todo.setCompleted(todoRequest.getCompleted());
+        todo.setDateTime(LocalDateTime.now());
         todoRepository.save(todo);
     }
 
@@ -52,7 +59,7 @@ public class TodoService {
 
     public void toggleTodo(Long todoId) {
         Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "item not exist"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "item not exist"));
         todo.setCompleted(!todo.getCompleted());
         todoRepository.save(todo);
     }
