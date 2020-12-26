@@ -6,6 +6,7 @@ import com.msg.todolist.model.UserResponse;
 import com.msg.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,10 +17,13 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponse> findAll(){
@@ -40,7 +44,7 @@ public class UserService {
     public void addUser(UserRequest userRequest){
         User user = new User();
         user.setUserName(userRequest.getUserName());
-        user.setPassword(userRequest.getUserName());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRepository.save(user);
     }
 
