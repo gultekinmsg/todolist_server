@@ -28,7 +28,7 @@ public class TodoService {
     }
 
     public List<TodoResponse> findAll() {
-        if (todoRepository.findAll().isEmpty()) {
+        if (todoRepository.findAllByOrderByDateTimeDesc().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "empty list");
         }
         List<TodoResponse> todoResponseList = new ArrayList<>();
