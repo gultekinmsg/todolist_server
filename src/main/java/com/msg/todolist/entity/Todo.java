@@ -16,8 +16,5 @@ public class Todo {
     private String name;
     private Boolean completed;
     private LocalDateTime dateTime;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
 }

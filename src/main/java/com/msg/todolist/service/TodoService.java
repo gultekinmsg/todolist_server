@@ -5,16 +5,12 @@ import com.msg.todolist.model.TodoRequest;
 import com.msg.todolist.model.TodoResponse;
 import com.msg.todolist.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -29,7 +25,7 @@ public class TodoService {
 
     public List<TodoResponse> findAll() {
         if (todoRepository.findAllByOrderByDateTimeDesc().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "empty list");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "empty todo list");
         }
         List<TodoResponse> todoResponseList = new ArrayList<>();
         List<Todo> items = todoRepository.findAllByOrderByDateTimeDesc();
