@@ -8,7 +8,6 @@ import java.util.List;
 public interface TodoRepository extends CrudRepository<Todo,Long>{
     List<Todo> findAll();
     List<Todo> findAllByUserIdOrderByDateTimeDesc(Long user_id);
-    List<Todo> findAllByOrderByDateTimeDesc();
     Todo findByIdAndUserId(Long id, Long user_id);
 
 }

@@ -1,68 +1,61 @@
 package com.msg.todolist.service;
 
 import com.msg.todolist.entity.Todo;
+import com.msg.todolist.entity.User;
+import com.msg.todolist.mapper.TodoMapper;
 import com.msg.todolist.model.TodoRequest;
 import com.msg.todolist.model.TodoResponse;
 import com.msg.todolist.repository.TodoRepository;
-import com.msg.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TodoService {
 
     private final TodoRepository todoRepository;
-    private final UserDetailService userDetailService;
 
     @Autowired
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository, UserDetailService userDetailService) {
+    public TodoService(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
-        this.userDetailService = userDetailService;
     }
 
-    public List<TodoResponse> findAll() {
-        if (todoRepository.findAllByUserIdOrderByDateTimeDesc(userDetailService.findCurrentUser().getId()).isEmpty()) {
+    public List<TodoResponse> findAll(User user) {
+        List<Todo> items = todoRepository.findAllByUserIdOrderByDateTimeDesc(user.getId());
+        if (items.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "empty todo list");
         }
-        List<TodoResponse> todoResponseList = new ArrayList<>();
-        List<Todo> items = todoRepository.findAllByUserIdOrderByDateTimeDesc(userDetailService.findCurrentUser().getId());
-        for (Todo item : items) {
-                TodoResponse model = new TodoResponse();
-                model.setId(item.getId());
-                model.setName(item.getName());
-                model.setCompleted(item.getCompleted());
-                model.setDateTime(item.getDateTime());
-                model.setUserId(item.getUser().getId());
-                todoResponseList.add(model);
-        }
-        return todoResponseList;
+        return TodoMapper.toModels(items);
     }
 
-    public void addTodo(TodoRequest todoRequest) {
-        Todo todo = new Todo();
-        todo.setName(todoRequest.getName());
-        todo.setCompleted(todoRequest.getCompleted());
-        todo.setDateTime(LocalDateTime.now());
-        todo.setUser(userDetailService.findCurrentUser());
-        todoRepository.save(todo);
+
+    public void addTodo(TodoRequest todoRequest, User user) {
+        Todo newTodo = TodoMapper.toEntity(todoRequest, user);
+        todoRepository.save(newTodo);
     }
 
-    public void deleteTodo(Long todoId) {
-        Todo todoToChange = todoRepository.findByIdAndUserId(todoId,userDetailService.findCurrentUser().getId());
-        todoRepository.delete(todoToChange);
+    public void deleteTodo(Long todoId, User user) {
+        Todo todoToDelete = todoRepository.findByIdAndUserId(todoId, user.getId());
+        validateTodo(todoToDelete);
+        todoRepository.delete(todoToDelete);
 
     }
 
-    public void toggleTodo(Long todoId) {
-        Todo todoToChange = todoRepository.findByIdAndUserId(todoId,userDetailService.findCurrentUser().getId());
+    public void toggleTodo(Long todoId, User user) {
+        Todo todoToChange = todoRepository.findByIdAndUserId(todoId, user.getId());
+        validateTodo(todoToChange);
         todoToChange.setCompleted(!todoToChange.getCompleted());
         todoRepository.save(todoToChange);
     }
+
+    private void validateTodo(Todo todoToChange) {
+        if (todoToChange == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "item not exist");
+        }
+    }
+
 
 }
