@@ -12,4 +12,5 @@ public class TodoResponse {
     private Boolean completed;
     @JsonFormat(pattern = "dd/MM/yyyy - HH:mm")
     private LocalDateTime dateTime;
+    private Long userId;
 }

@@ -3,6 +3,7 @@ package com.msg.todolist.service;
 import com.msg.todolist.entity.User;
 import com.msg.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,4 +33,23 @@ public class UserDetailService implements UserDetailsService {
 
         return userDetails;
     }
+
+    public String getCurrentUsername(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails){
+            return ((UserDetails)principal).getUsername();
+        }else {
+            return principal.toString();
+        }
+    }
+
+    public Long currentUserId(){
+        String userName = getCurrentUsername();
+        User user = userRepository.findByUserName(userName);
+        if (user==null){
+            throw new UsernameNotFoundException(userName);
+        }
+        return user.getId();
+    }
+
 }
