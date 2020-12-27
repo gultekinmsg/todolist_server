@@ -34,7 +34,7 @@ public class UserDetailService implements UserDetailsService {
         return userDetails;
     }
 
-    public String getCurrentUsername(){
+    private String getCurrentUsername(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails){
             return ((UserDetails)principal).getUsername();
@@ -43,13 +43,9 @@ public class UserDetailService implements UserDetailsService {
         }
     }
 
-    public Long currentUserId(){
-        String userName = getCurrentUsername();
-        User user = userRepository.findByUserName(userName);
-        if (user==null){
-            throw new UsernameNotFoundException(userName);
-        }
-        return user.getId();
+    public User findCurrentUser(){
+        String currentUserName = getCurrentUsername();
+        return userRepository.findByUserName(currentUserName);
     }
 
 }

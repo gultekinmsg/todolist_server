@@ -38,7 +38,7 @@ public class TodoService {
         List<TodoResponse> todoResponseList = new ArrayList<>();
         List<Todo> items = todoRepository.findAllByOrderByDateTimeDesc();
         for (Todo item : items) {
-            if (item.getUser().getId().equals(findCurrentUser().getId())){
+            if (item.getUser().getId().equals(userDetailService.findCurrentUser().getId())){
                 TodoResponse model = new TodoResponse();
                 model.setId(item.getId());
                 model.setName(item.getName());
@@ -56,13 +56,13 @@ public class TodoService {
         todo.setName(todoRequest.getName());
         todo.setCompleted(todoRequest.getCompleted());
         todo.setDateTime(LocalDateTime.now());
-        todo.setUser(findCurrentUser());
+        todo.setUser(userDetailService.findCurrentUser());
         todoRepository.save(todo);
     }
 
     public void deleteTodo(Long todoId) {
         Optional<Todo> todos = todoRepository.findById(todoId);
-        if (todos.get().getUser().getId().equals(findCurrentUser().getId())){
+        if (todos.get().getUser().getId().equals(userDetailService.findCurrentUser().getId())){
             checkTodoExists(todoId);
             todoRepository.deleteById(todoId);
         }else {
@@ -72,7 +72,7 @@ public class TodoService {
 
     public void toggleTodo(Long todoId) {
         Optional<Todo> todos = todoRepository.findById(todoId);
-        if (todos.get().getUser().getId().equals(findCurrentUser().getId())){
+        if (todos.get().getUser().getId().equals(userDetailService.findCurrentUser().getId())){
             Todo todo = todoRepository.findById(todoId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "item not exist"));
             todo.setCompleted(!todo.getCompleted());
@@ -89,9 +89,6 @@ public class TodoService {
         }
     }
 
-    public User findCurrentUser(){
-        String currentUserName =userDetailService.getCurrentUsername();
-        return userRepository.findByUserName(currentUserName);
-    }
+
 
 }
