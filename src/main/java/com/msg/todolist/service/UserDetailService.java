@@ -22,8 +22,8 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final User user=userRepository.findByUserName(username);
-        if (user==null){
+        final User user = userRepository.findByUserName(username);
+        if (user == null) {
             throw new UsernameNotFoundException(username);
         }
         UserDetails userDetails = org.springframework.security.core.userdetails.User
@@ -34,18 +34,17 @@ public class UserDetailService implements UserDetailsService {
         return userDetails;
     }
 
-    private String getCurrentUsername(){
+    private String getCurrentUsername() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails){
-            return ((UserDetails)principal).getUsername();
-        }else {
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
             return principal.toString();
         }
     }
 
-    public User findCurrentUser(){
+    public User findCurrentUser() {
         String currentUserName = getCurrentUsername();
         return userRepository.findByUserName(currentUserName);
     }
-
 }

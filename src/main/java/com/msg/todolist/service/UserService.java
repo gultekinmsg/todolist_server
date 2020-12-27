@@ -26,9 +26,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<UserResponse> findAll(){
-        if (userRepository.findAll().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"empty user list");
+    public List<UserResponse> findAll() {
+        if (userRepository.findAll().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "empty user list");
         }
         List<UserResponse> userResponseList = new ArrayList<>();
         List<User> users = userRepository.findAll();
@@ -41,18 +41,17 @@ public class UserService {
         return userResponseList;
     }
 
-    public void addUser(UserRequest userRequest){
+    public void addUser(UserRequest userRequest) {
         User user = new User();
         user.setUserName(userRequest.getUserName());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRepository.save(user);
     }
 
-    public void deleteUser(Long userId){
-        if (userRepository.findById(userId).isEmpty()){
+    public void deleteUser(Long userId) {
+        if (userRepository.findById(userId).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not exist");
         }
         userRepository.deleteById(userId);
     }
-
 }

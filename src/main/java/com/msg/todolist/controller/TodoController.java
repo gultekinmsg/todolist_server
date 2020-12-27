@@ -1,6 +1,5 @@
 package com.msg.todolist.controller;
 
-import com.msg.todolist.entity.User;
 import com.msg.todolist.model.TodoRequest;
 import com.msg.todolist.model.TodoResponse;
 import com.msg.todolist.service.TodoService;
@@ -45,5 +44,4 @@ public class TodoController {
     public void toggleTodo(@PathVariable Long todoId) {
         todoService.toggleTodo(todoId, userDetailService.findCurrentUser());
     }
-
 }

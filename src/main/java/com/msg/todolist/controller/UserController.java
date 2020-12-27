@@ -21,22 +21,18 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public List<UserResponse> getUsers(){
+    public List<UserResponse> getUsers() {
         return userService.findAll();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/user")
-    public void addUser(@RequestBody @Valid UserRequest userRequest){
+    public void addUser(@RequestBody @Valid UserRequest userRequest) {
         userService.addUser(userRequest);
     }
 
     @DeleteMapping("/user/{userId}")
-    public void deleteUser(@PathVariable Long userId){
+    public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }
-
-
-
-
 }

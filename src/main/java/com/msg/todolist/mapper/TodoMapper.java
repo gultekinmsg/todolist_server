@@ -36,5 +36,4 @@ public class TodoMapper {
         todo.setUser(user);
         return todo;
     }
-
 }

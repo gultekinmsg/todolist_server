@@ -31,7 +31,6 @@ public class TodoService {
         return TodoMapper.toModels(items);
     }
 
-
     public void addTodo(TodoRequest todoRequest, User user) {
         Todo newTodo = TodoMapper.toEntity(todoRequest, user);
         todoRepository.save(newTodo);
